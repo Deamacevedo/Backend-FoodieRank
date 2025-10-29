@@ -9,6 +9,7 @@ const { generalLimiter } = require('./middlewares/rateLimiter');
 // Importar rutas
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Crear aplicación Express
 const app = express();
@@ -67,6 +68,7 @@ app.get('/health', (req, res) => {
 // Rutas de la API v1
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
 /**
  * MANEJO DE ERRORES
