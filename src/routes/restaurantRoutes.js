@@ -15,18 +15,19 @@ const {
  * Base URL: /api/v1/restaurants
  */
 
-/**
- * GET /api/v1/restaurants/stats
- * Obtener estadísticas de restaurantes
- * Public
- */
+// GET /api/v1/restaurants/stats
+// Obtener estadísticas de restaurantes
+// Acceso: Público
 router.get('/stats', restaurantController.getRestaurantStats);
 
-/**
- * GET /api/v1/restaurants/cities
- * Obtener ciudades disponibles
- * Public
- */
+// GET /api/v1/restaurants/ranking
+// Obtener ranking de restaurantes con algoritmo ponderado
+// Acceso: Público
+router.get('/ranking', paginationValidator, restaurantController.getRanking);
+
+// GET /api/v1/restaurants/cities
+// Obtener ciudades disponibles
+// Acceso: Público
 router.get('/cities', restaurantController.getCities);
 
 /**

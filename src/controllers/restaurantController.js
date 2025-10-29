@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const restaurantModel = require('../models/restaurantModel');
 const restaurantService = require('../services/restaurantService');
+const rankingService = require('../services/rankingService');
 const { sendSuccess, sendError, handleError } = require('../utils/responseHandler');
 
 /**
@@ -216,6 +217,25 @@ const getRestaurantStats = async (req, res) => {
   }
 };
 
+// Obtiene el ranking de restaurantes
+// GET /api/v1/restaurants/ranking
+const getRanking = async (req, res) => {
+  try {
+    const { categoryId, limit, page } = req.query;
+
+    const result = await rankingService.getRanking({
+      categoryId,
+      limit: parseInt(limit) || 10,
+      page: parseInt(page) || 1
+    });
+
+    sendSuccess(res, 200, result, 'Ranking obtenido exitosamente');
+
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createRestaurant,
   getAllRestaurants,
@@ -225,5 +245,7 @@ module.exports = {
   approveRestaurant,
   getMyRestaurants,
   getCities,
-  getRestaurantStats
+  getRestaurantStats,
+  getRanking
 };
+  
