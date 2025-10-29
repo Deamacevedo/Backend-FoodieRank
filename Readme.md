@@ -1,124 +1,212 @@
-Objetivo
+# FoodieRank - Backend API
 
+Sistema de ranking de restaurantes y platos con Node.js, Express y MongoDB.
 
-El objetivo de este proyecto es desarrollar una aplicación full-stack usando Node.js + Express para el backend y HTML + CSS puro para el frontend, que permita a los usuarios registrar, calificar y rankear restaurantes y platos. Esta herramienta debe incluir funcionalidades para gestionar usuarios, reseñas, categorías y rankings, diferenciando permisos de usuario y administrador. Además, debe contar con autenticación segura, validaciones robustas y un frontend que consuma la API desarrollada.
+## 🚀 Inicio Rápido
 
+### Prerrequisitos
+- Node.js v18 o superior
+- MongoDB Atlas (ya configurado)
+- npm o yarn
 
+### Instalación
 
-La aplicación debe:
+```bash
+# 1. Navegar a la carpeta backend
+cd backend
 
+# 2. Instalar dependencias
+npm install
 
-Estar desarrollada completamente en Node.js con Express para el backend.
-Implementar autenticación con JWT usando passport-jwt, jsonwebtoken y bcrypt.
-Usar dotenv para la configuración de variables de entorno.
-Integrar express-rate-limit para limitar peticiones y evitar abusos.
-Implementar validaciones en endpoints usando express-validator.
-Persistir los datos en MongoDB, usando el driver oficial (no mongoose).
-Documentar todos los endpoints usando swagger-ui-express.
-Versionar el API siguiendo semver.
-Manejar transacciones reales en MongoDB para operaciones críticas (ej. creación de reseñas con calificación inicial, gestión de likes/dislikes).
-Contar con una arquitectura coherente (ejemplo: /models, /controllers, /routes, /middlewares, /services, /config, /utils).
-Tener un frontend independiente en otro repositorio, desarrollado en HTML + CSS + JS puro.
+# 3. Crear archivo .env (copiar desde .env.example)
+cp .env.example .env
 
+# 4. Iniciar servidor en modo desarrollo
+npm run dev
+```
 
-Funcionalidades requeridas
-Gestión de usuarios
-Registro, inicio de sesión y autenticación mediante JWT.
-Roles: usuario y administrador.
-Los administradores pueden gestionar categorías y aprobar restaurantes/platos.
-Gestión de restaurantes y platos
-CRUD de restaurantes (solo administradores aprueban nuevas entradas).
-CRUD de platos vinculados a restaurantes.
-Validación para evitar nombres de restaurantes/platos repetidos.
-Atributos mínimos: nombre, descripción, categoría (Comida rápida, Gourmet, Vegetariano, etc.), ubicación, imagen opcional.
-Gestión de reseñas y ratings
-Los usuarios pueden crear, editar y eliminar reseñas.
-Cada reseña incluye: comentario, calificación numérica (1-5 estrellas).
-Los usuarios pueden dar like/dislike a reseñas de otros (no a las propias).
-El sistema debe calcular un ranking ponderado de restaurantes basado en calificaciones, likes/dislikes y fecha de reseña.
-Categorías
-CRUD de categorías (ejemplo: Comida rápida, Gourmet, Vegetariano, Sushi).
-Solo administradores pueden gestionarlas.
-Ranking y listados
-Listado de restaurantes con ordenamiento por popularidad y ranking.
-Filtrado por categoría.
-Vista de detalle con información del restaurante, platos y reseñas asociadas.
+El servidor estará disponible en: `http://localhost:3000`
 
+## 📋 Variables de Entorno
 
+El archivo `.env` debe contener:
 
+```env
+PORT=3000
+NODE_ENV=development
+API_VERSION=1.0.0
 
-Especificaciones técnicas obligatorias
-Backend (Node.js + Express)
-Uso obligatorio de dotenv, express, express-rate-limit, express-validator, mongodb, semver, swagger-ui-express, passport-jwt, jsonwebtoken, bcrypt.
-MongoDB con operaciones transaccionales para garantizar consistencia.
-Arquitectura modular y escalable.
-Manejo de errores centralizado y códigos HTTP correctos.
-Debe estar desarrollado en Node.js con Express.
-Uso de variables de entorno para credenciales y configuración (archivo .env).
-Modularización del código (separar rutas, controladores, modelos y configuración).
-Validaciones en las rutas usando express-validator.
-Manejo adecuado de errores y envío de respuestas con los códigos HTTP correctos.
-Configuración de CORS para permitir la conexión desde el frontend.
-Documentación en el README con:
-Explicación del proyecto.
-Requerimientos de instalación.
-Variables de entorno necesarias.
-Ejemplos de endpoints y cómo probarlos.
-Link al repositorio del frontend.
-2. Frontend
-HTML, CSS y JavaScript puro.
-Pantallas mínimas: Inicio, Registro/Login, Listado de restaurantes, Detalle de restaurante, Panel admin.
-Debe consumir los endpoints del backend.
-Interfaz amigable y responsive para realizar todas las operaciones (crear, leer, actualizar, eliminar).
-Mostrar mensajes de validación o error provenientes del backend.
-Repositorio separado del backend.
-3. Documentación (README del backend)
-Descripción del proyecto y temática elegida.
-Tecnologías usadas.
-Pasos para instalar y ejecutar.
-Ejemplos de endpoints y cómo consumirlos.
-Link al repositorio del frontend.
-4. Video de entrega
-Duración máxima: 10 minutos.
-Deben aparecer todos los integrantes en cámara.
-Mostrar brevemente el código del backend.
-Mostrar el funcionamiento completo del frontend.
+MONGODB_URI=mongodb+srv://jefersonlopezr99_db_user:lghUcvIzB2MDOl1x@cluster0.2daxdau.mongodb.net/
+DB_NAME=foodierank
 
+JWT_SECRET=foodierank-dylan-jeferson
+JWT_EXPIRES_IN=24h
 
+CORS_ORIGIN=http://localhost:5500
 
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
 
-Planeación del proyecto
-El desarrollo se debe realizar bajo SCRUM.
-Roles definidos: Scrum Master, Product Owner, Developers.
-Definir al menos 2 sprints.
-Historias de usuario documentadas.
-Herramienta de seguimiento: GitHub Projects, Trello, ClickUp o similar.
-Documento de planeación en PDF adjunto al repositorio backend, siguiendo plantilla entregada.
+## 🔑 Autenticación
 
+La API usa JWT (JSON Web Tokens). Para usar endpoints protegidos:
 
-Resultado esperado
+1. **Registrarse o hacer login:**
+```bash
+POST http://localhost:3000/api/v1/auth/register
+POST http://localhost:3000/api/v1/auth/login
+```
 
-La entrega se debe hacer en equipo, subiendo el proyecto a un repositorio GitHub privado y agregando al trainer como colaborador. El backend debe contener toda la lógica y documentación. El frontend debe estar en un repositorio separado, vinculado desde el README del backend.
+2. **Usar el token en las peticiones:**
+```javascript
+headers: {
+  'Authorization': 'Bearer YOUR_TOKEN_HERE'
+}
+```
 
+## 📡 Endpoints Principales
 
+### Autenticación
+```
+POST   /api/v1/auth/register       - Registrar usuario
+POST   /api/v1/auth/login          - Iniciar sesión
+GET    /api/v1/auth/profile        - Ver perfil (requiere auth)
+```
 
-El repositorio backend debe incluir:
+### Restaurantes
+```
+GET    /api/v1/restaurants         - Listar restaurantes
+GET    /api/v1/restaurants/:id     - Ver detalle
+POST   /api/v1/restaurants         - Crear (requiere auth)
+GET    /api/v1/restaurants/ranking - Ver ranking ponderado
+```
 
-README.md con:
-Descripción del proyecto.
-Instrucciones de instalación y uso.
-Estructura del proyecto.
-Principios aplicados.
-Consideraciones técnicas.
-Créditos.
-Link al repo del frontend.
-Documento SCRUM en PDF con:
-Roles asignados.
-Definición de sprints.
-Historias de usuario.
-Herramienta de seguimiento.
-Evidencias.
-Video enlazado en el README mostrando:
-Explicación técnica.
-Ejemplos de código.
-Demo funcional de la aplicación completa.
+### Categorías
+```
+GET    /api/v1/categories          - Listar categorías
+POST   /api/v1/categories          - Crear (solo admin)
+```
+
+### Platos
+```
+GET    /api/v1/restaurants/:id/dishes  - Platos de un restaurante
+POST   /api/v1/restaurants/:id/dishes  - Agregar plato (requiere auth)
+```
+
+### Reseñas
+```
+GET    /api/v1/restaurants/:id/reviews  - Reseñas de un restaurante
+POST   /api/v1/restaurants/:id/reviews  - Crear reseña (requiere auth)
+POST   /api/v1/reviews/:id/like         - Dar like (requiere auth)
+```
+
+## 🏗️ Estructura del Proyecto
+
+```
+backend/
+├── src/
+│   ├── config/          # Configuraciones (DB, Passport)
+│   ├── controllers/     # Controladores HTTP
+│   ├── middlewares/     # Middlewares (auth, errors, rate limit)
+│   ├── models/          # Modelos de datos
+│   ├── routes/          # Rutas de la API
+│   ├── services/        # Lógica de negocio
+│   ├── utils/           # Utilidades y helpers
+│   └── app.js           # Punto de entrada
+├── .env                 # Variables de entorno
+├── .env.example         # Ejemplo de variables
+├── package.json         # Dependencias
+└── README.md           # Este archivo
+```
+
+## 👥 Roles de Usuario
+
+- **user**: Usuario normal (puede crear restaurantes, reseñas, likes)
+- **admin**: Administrador (puede aprobar restaurantes, gestionar categorías)
+
+### Crear un usuario admin:
+Por defecto, todos los usuarios son "user". Para crear un admin, usa:
+```bash
+POST /api/v1/auth/register
+{
+  "username": "admin",
+  "email": "admin@foodierank.com",
+  "password": "Admin123",
+  "role": "admin"
+}
+```
+
+## 🧪 Probar la API
+
+### Con curl:
+```bash
+# Registrarse
+curl -X POST http://localhost:3000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"johndoe","email":"john@example.com","password":"Password123"}'
+
+# Listar restaurantes
+curl http://localhost:3000/api/v1/restaurants
+```
+
+### Con Postman o Thunder Client:
+1. Importa la URL base: `http://localhost:3000/api/v1`
+2. Crea las peticiones según los endpoints
+3. Para rutas protegidas, agrega el header `Authorization: Bearer {token}`
+
+## 📊 Características Principales
+
+✅ **Autenticación JWT** con roles (user/admin)
+✅ **CRUD completo** de restaurantes, platos, categorías y reseñas
+✅ **Sistema de aprobación** de restaurantes por admin
+✅ **Rating automático** que se actualiza con cada reseña
+✅ **Sistema de likes/dislikes** en reseñas
+✅ **Ranking ponderado** con algoritmo personalizado
+✅ **Transacciones MongoDB** para consistencia de datos
+✅ **Rate limiting** para seguridad
+✅ **Validación de datos** en todos los endpoints
+
+## 🔒 Seguridad
+
+- Contraseñas hasheadas con bcrypt (10 rounds)
+- JWT con expiración de 24 horas
+- Rate limiting: 100 requests/15min (general), 50/15min (likes)
+- Validación de inputs con express-validator
+- CORS configurado
+- Headers de seguridad
+
+## 📝 Scripts Disponibles
+
+```bash
+npm start       # Inicia el servidor en producción
+npm run dev     # Inicia el servidor en desarrollo (con nodemon)
+```
+
+## 🐛 Solución de Problemas
+
+### El servidor no inicia:
+- Verifica que el puerto 3000 esté libre
+- Revisa que las variables de entorno estén correctas
+- Asegúrate de tener Node.js v18+
+
+### Error de conexión a MongoDB:
+- Verifica que el MONGODB_URI esté correcto
+- Comprueba tu conexión a internet
+- Revisa que la IP esté en la whitelist de MongoDB Atlas
+
+### Token inválido o expirado:
+- Los tokens JWT expiran en 24 horas
+- Vuelve a hacer login para obtener un nuevo token
+
+## 👨‍💻 Equipo de Desarrollo
+
+- **Scrum Master:** Jeferson Lopez
+- **Product Owner:** Dylan Acevedo
+- **Developers:** Dylan Acevedo y Jeferson Lopez
+
+## 📄 Licencia
+
+ISC
+
+---
