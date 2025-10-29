@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const restaurantRoutes = require('./routes/restaurantRoutes');
+const dishRoutes = require('./routes/dishRoutes');
 
 // Crear aplicación Express
 const app = express();
@@ -71,6 +72,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/restaurants', restaurantRoutes);
+app.use('/api/v1', dishRoutes);
 
 /**
  * MANEJO DE ERRORES
