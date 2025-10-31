@@ -25,24 +25,36 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5500',  // Desarrollo
   'http://127.0.0.1:5500',  // Desarrollo (alternativo)
-  'https://foodierank.vercel.app' // Producción en Vercel (sin barra al final)
+  'https://foodierank.vercel.app' // Producción en Vercel
 ];
 
-app.use(cors({
+// Configuración CORS mejorada
+const corsOptions = {
   origin: function(origin, callback) {
-    // Permitir requests sin origin (como Postman)
-    if (!origin) return callback(null, true);
+    // Permitir requests sin origin (como Postman, mobile apps, etc)
+    if (!origin) {
+      return callback(null, true);
+    }
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Verificar si el origin está en la lista de permitidos
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('No permitido por CORS'));
+      console.log(`⚠️ CORS blocked request from origin: ${origin}`);
+      callback(new Error(`CORS: Origin ${origin} not allowed`));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 600 // Cache preflight request por 10 minutos
+};
+
+app.use(cors(corsOptions));
+
+// Manejar preflight requests explícitamente
+app.options('*', cors(corsOptions));
 
 // Body parser
 app.use(express.json());
