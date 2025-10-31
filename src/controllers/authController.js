@@ -51,10 +51,17 @@ const login = async (req, res) => {
       return sendError(res, 422, 'VALIDATION_ERROR', 'Errores de validación', errors.array());
     }
 
-    const { email, password } = req.body;
+    const { email, username, password } = req.body;
+
+    // Aceptar tanto email como username
+    const identifier = email || username;
+
+    if (!identifier) {
+      return sendError(res, 400, 'MISSING_IDENTIFIER', 'Debes proporcionar un email o username');
+    }
 
     // Llamar al servicio de login
-    const result = await authService.login(email, password);
+    const result = await authService.login(identifier, password);
 
     sendSuccess(res, 200, {
       user: result.user,

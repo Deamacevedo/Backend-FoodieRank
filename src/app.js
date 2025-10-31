@@ -21,10 +21,13 @@ const app = express();
  * MIDDLEWARES GLOBALES
  */
 
-// CORS
+// CORS - Configuración permisiva para desarrollo
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5500',
-  credentials: true
+  origin: true, // Permitir todos los orígenes en desarrollo
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
 
 // Body parser
@@ -107,13 +110,13 @@ const startServer = async () => {
 ║           🍔 FOODIERANK API - SERVIDOR ACTIVO 🍔          ║
 ║                                                           ║
 ║  Puerto:        ${PORT}                                      ║
-║  Entorno:       ${process.env.NODE_ENV || 'development'}                              ║
-║  Version:       ${process.env.API_VERSION || '1.0.0'}                                ║
+║  Entorno:       ${process.env.NODE_ENV || 'development'}                               ║
+║  Version:       ${process.env.API_VERSION || '1.0.0'}                                     ║
 ║                                                           ║
 ║  Endpoints:                                               ║
-║  - Health:      http://localhost:${PORT}/health               ║
-║  - API v1:      http://localhost:${PORT}/api/v1               ║
-║  - Docs:        http://localhost:${PORT}/api/v1/docs          ║
+║  - Health:      http://localhost:${PORT}/health              ║
+║  - API v1:      http://localhost:${PORT}/api/v1              ║
+║  - Docs:        http://localhost:${PORT}/api/v1/docs         ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
       `);

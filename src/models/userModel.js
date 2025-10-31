@@ -22,7 +22,7 @@ const create = async (userData) => {
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
   const newUser = {
-    username,
+    username: username.toLowerCase(),
     email: email.toLowerCase(),
     password: hashedPassword,
     role,
@@ -55,7 +55,9 @@ const findByEmail = async (email) => {
  */
 const findByUsername = async (username) => {
   const db = getDB();
-  return await db.collection(COLLECTION_NAME).findOne({ username });
+  return await db.collection(COLLECTION_NAME).findOne({
+    username: username.toLowerCase()
+  });
 };
 
 /**
@@ -121,6 +123,11 @@ const update = async (id, updateData) => {
   // Si se actualiza el email, convertirlo a lowercase
   if (updateData.email) {
     updateData.email = updateData.email.toLowerCase();
+  }
+
+  // Si se actualiza el username, convertirlo a lowercase
+  if (updateData.username) {
+    updateData.username = updateData.username.toLowerCase();
   }
 
   updateData.updatedAt = new Date();

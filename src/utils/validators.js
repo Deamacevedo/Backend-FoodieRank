@@ -45,16 +45,27 @@ const registerValidator = [
  */
 const loginValidator = [
   body('email')
+    .optional()
     .trim()
-    .notEmpty()
-    .withMessage('El email es requerido')
     .isEmail()
     .withMessage('Debe ser un email válido')
     .normalizeEmail(),
 
+  body('username')
+    .optional()
+    .trim(),
+
   body('password')
     .notEmpty()
-    .withMessage('La contraseña es requerida')
+    .withMessage('La contraseña es requerida'),
+
+  // Validación personalizada para asegurar que al menos uno esté presente
+  body().custom((value, { req }) => {
+    if (!req.body.email && !req.body.username) {
+      throw new Error('Debes proporcionar un email o username');
+    }
+    return true;
+  })
 ];
 
 /**

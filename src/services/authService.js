@@ -76,9 +76,14 @@ const register = async (userData) => {
 /**
  * Inicia sesión de un usuario
  */
-const login = async (email, password) => {
-  // Buscar usuario por email
-  const user = await userModel.findByEmail(email);
+const login = async (identifier, password) => {
+  // Determinar si el identifier es un email o un username
+  const isEmail = identifier.includes('@');
+
+  // Buscar usuario por email o username
+  const user = isEmail
+    ? await userModel.findByEmail(identifier)
+    : await userModel.findByUsername(identifier);
 
   if (!user) {
     throw new Error('INVALID_CREDENTIALS');
