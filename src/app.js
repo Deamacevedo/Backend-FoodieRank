@@ -22,12 +22,26 @@ const app = express();
  */
 
 // CORS - Configuración permisiva para desarrollo
+// CORS - Configuración para producción
+const allowedOrigins = [
+  'http://localhost:5500',  // Desarrollo
+  'https://foodierank.vercel.app/' // Producción (cambiar después)
+];
+
 app.use(cors({
-  origin: true, // Permitir todos los orígenes en desarrollo
+  origin: function(origin, callback) {
+    // Permitir requests sin origin (como Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Body parser
