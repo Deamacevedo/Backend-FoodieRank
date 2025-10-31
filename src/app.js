@@ -21,11 +21,11 @@ const app = express();
  * MIDDLEWARES GLOBALES
  */
 
-// CORS - Configuración permisiva para desarrollo
-// CORS - Configuración para producción
+// CORS - Configuración para desarrollo y producción
 const allowedOrigins = [
   'http://localhost:5500',  // Desarrollo
-  'https://foodierank.vercel.app/' // Producción (cambiar después)
+  'http://127.0.0.1:5500',  // Desarrollo (alternativo)
+  'https://foodierank.vercel.app' // Producción en Vercel (sin barra al final)
 ];
 
 app.use(cors({
