@@ -3,7 +3,7 @@ const router = express.Router();
 const reviewController = require('../controllers/reviewController');
 const { requireAuth } = require('../middlewares/authMiddleware');
 const { interactionLimiter } = require('../middlewares/rateLimiter');
-const { createReviewValidator, mongoIdValidator, paginationValidator } = require('../utils/validators');
+const { createReviewValidator, mongoIdValidator, restaurantIdValidator, paginationValidator } = require('../utils/validators');
 
 // Rutas de Reseñas
 // Base URL: /api/v1
@@ -36,11 +36,11 @@ router.post('/reviews/:id/dislike', requireAuth, interactionLimiter, mongoIdVali
 // GET /api/v1/restaurants/:restaurantId/reviews
 // Obtener todas las reseñas de un restaurante
 // Acceso: Público
-router.get('/restaurants/:restaurantId/reviews', mongoIdValidator, paginationValidator, reviewController.getRestaurantReviews);
+router.get('/restaurants/:restaurantId/reviews', restaurantIdValidator, paginationValidator, reviewController.getRestaurantReviews);
 
 // POST /api/v1/restaurants/:restaurantId/reviews
 // Crear una nueva reseña en un restaurante
 // Acceso: Privado
-router.post('/restaurants/:restaurantId/reviews', requireAuth, mongoIdValidator, createReviewValidator, reviewController.createReview);
+router.post('/restaurants/:restaurantId/reviews', requireAuth, restaurantIdValidator, createReviewValidator, reviewController.createReview);
 
 module.exports = router;

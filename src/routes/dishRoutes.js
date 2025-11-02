@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dishController = require('../controllers/dishController');
 const { requireAuth } = require('../middlewares/authMiddleware');
-const { createDishValidator, mongoIdValidator, paginationValidator } = require('../utils/validators');
+const { createDishValidator, mongoIdValidator, restaurantIdValidator, paginationValidator } = require('../utils/validators');
 
 // Rutas de Platos
 // Base URL: /api/v1
@@ -30,11 +30,11 @@ router.delete('/dishes/:id', requireAuth, mongoIdValidator, dishController.delet
 // GET /api/v1/restaurants/:restaurantId/dishes
 // Obtener todos los platos de un restaurante
 // Acceso: Público
-router.get('/restaurants/:restaurantId/dishes', mongoIdValidator, paginationValidator, dishController.getDishesByRestaurant);
+router.get('/restaurants/:restaurantId/dishes', restaurantIdValidator, paginationValidator, dishController.getDishesByRestaurant);
 
 // POST /api/v1/restaurants/:restaurantId/dishes
 // Crear un nuevo plato en un restaurante
 // Acceso: Privado (creador del restaurante o admin)
-router.post('/restaurants/:restaurantId/dishes', requireAuth, mongoIdValidator, createDishValidator, dishController.createDish);
+router.post('/restaurants/:restaurantId/dishes', requireAuth, restaurantIdValidator, createDishValidator, dishController.createDish);
 
 module.exports = router;

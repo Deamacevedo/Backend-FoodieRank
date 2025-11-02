@@ -272,6 +272,15 @@ const mongoIdValidator = [
 ];
 
 /**
+ * Validaciones para parámetro restaurantId
+ */
+const restaurantIdValidator = [
+  param('restaurantId')
+    .isMongoId()
+    .withMessage('ID de restaurante inválido')
+];
+
+/**
  * Validaciones para paginación
  */
 const paginationValidator = [
@@ -296,5 +305,6 @@ module.exports = {
   createDishValidator,
   createReviewValidator,
   mongoIdValidator,
+  restaurantIdValidator,
   paginationValidator
 };
