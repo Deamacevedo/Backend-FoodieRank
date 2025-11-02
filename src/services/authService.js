@@ -64,11 +64,17 @@ const register = async (userData) => {
     role: role || 'user' // Por defecto es 'user'
   });
 
+  // Agregar campo 'id' para compatibilidad con frontend
+  const userResponse = {
+    ...user,
+    id: user._id.toString()
+  };
+
   // Generar token
   const token = generateToken(user);
 
   return {
-    user,
+    user: userResponse,
     token
   };
 };
@@ -99,11 +105,17 @@ const login = async (identifier, password) => {
   // Eliminar contraseña del objeto usuario
   const { password: _, ...userWithoutPassword } = user;
 
+  // Agregar campo 'id' para compatibilidad con frontend
+  const userResponse = {
+    ...userWithoutPassword,
+    id: userWithoutPassword._id.toString()
+  };
+
   // Generar token
   const token = generateToken(userWithoutPassword);
 
   return {
-    user: userWithoutPassword,
+    user: userResponse,
     token
   };
 };
@@ -119,7 +131,12 @@ const getProfile = async (userId) => {
   }
 
   const { password, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+
+  // Agregar campo 'id' para compatibilidad con frontend
+  return {
+    ...userWithoutPassword,
+    id: userWithoutPassword._id.toString()
+  };
 };
 
 /**
@@ -151,7 +168,11 @@ const updateProfile = async (userId, updateData) => {
     throw new Error('USER_NOT_FOUND');
   }
 
-  return updatedUser;
+  // Agregar campo 'id' para compatibilidad con frontend
+  return {
+    ...updatedUser,
+    id: updatedUser._id.toString()
+  };
 };
 
 /**

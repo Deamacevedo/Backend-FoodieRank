@@ -124,11 +124,30 @@ const findAll = async (options = {}) => {
   const sortOptions = {};
   sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
+  // Usar aggregation para incluir el nombre de la categoría
   const restaurants = await db.collection(COLLECTION_NAME)
-    .find(query)
-    .sort(sortOptions)
-    .skip(skip)
-    .limit(limit)
+    .aggregate([
+      { $match: query },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryId',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      {
+        $addFields: {
+          categoryName: {
+            $ifNull: [{ $arrayElemAt: ['$category.name', 0] }, 'Sin categoría']
+          }
+        }
+      },
+      { $project: { category: 0 } }, // Remover el array de category
+      { $sort: sortOptions },
+      { $skip: skip },
+      { $limit: limit }
+    ])
     .toArray();
 
   const total = await db.collection(COLLECTION_NAME).countDocuments(query);

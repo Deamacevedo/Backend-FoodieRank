@@ -56,7 +56,8 @@ const getRestaurantById = async (restaurantId, userId = null, userRole = 'user')
 
   return {
     ...restaurant,
-    category: category ? { _id: category._id, name: category.name } : null
+    category: category ? { _id: category._id, name: category.name } : null,
+    categoryName: category ? category.name : 'Sin categoría'  // Para compatibilidad con frontend
   };
 };
 
@@ -171,14 +172,33 @@ const deleteRestaurant = async (restaurantId) => {
  * Obtiene estadísticas de restaurantes
  */
 const getRestaurantStats = async () => {
-  const total = await restaurantModel.count();
+  const { getDB } = require('../config/database');
+  const db = getDB();
+
+  // Contar solo restaurantes aprobados para las estadísticas públicas
+  const totalRestaurants = await restaurantModel.count({ isApproved: true });
   const approved = await restaurantModel.count({ isApproved: true });
   const pending = await restaurantModel.count({ isApproved: false });
 
+  // Contar total de reseñas
+  const totalReviews = await db.collection('reviews').countDocuments();
+
+  // Contar total de categorías
+  const totalCategories = await db.collection('categories').countDocuments();
+
+  // Contar ciudades distintas (solo de restaurantes aprobados)
+  const cities = await db.collection('restaurants').distinct('location.city', { isApproved: true });
+  const totalCities = cities.length;
+
   return {
-    total,
+    totalRestaurants,  // Solo aprobados
+    totalReviews,
+    totalCategories,
+    totalCities,
+    // Información adicional para admins
     approved,
-    pending
+    pending,
+    total: approved + pending
   };
 };
 
