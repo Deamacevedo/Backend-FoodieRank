@@ -64,20 +64,34 @@ const findByRestaurant = async (restaurantId, options = {}) => {
 
   const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = options;
 
-  const query = { restaurantId: new ObjectId(restaurantId) };
   const skip = (page - 1) * limit;
 
   const sortOptions = {};
   sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
+  // Usar aggregation pipeline para hacer join con users
   const reviews = await db.collection(COLLECTION_NAME)
-    .find(query)
-    .sort(sortOptions)
-    .skip(skip)
-    .limit(limit)
+    .aggregate([
+      { $match: { restaurantId: new ObjectId(restaurantId) } },
+      { $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'user'
+      }},
+      { $addFields: {
+        username: { $ifNull: [{ $arrayElemAt: ['$user.username', 0] }, 'Usuario'] }
+      }},
+      { $project: { user: 0 } }, // Eliminar el array user del resultado
+      { $sort: sortOptions },
+      { $skip: skip },
+      { $limit: limit }
+    ])
     .toArray();
 
-  const total = await db.collection(COLLECTION_NAME).countDocuments(query);
+  const total = await db.collection(COLLECTION_NAME).countDocuments({
+    restaurantId: new ObjectId(restaurantId)
+  });
 
   return {
     reviews,
