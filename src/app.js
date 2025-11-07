@@ -13,6 +13,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const dishRoutes = require('./routes/dishRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const notificacionRoutes = require('./routes/notificacionRoutes')
 
 // Crear aplicación Express
 const app = express();
